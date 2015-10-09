@@ -62,24 +62,17 @@ public class ImageDisplayer {
 		return image;
 	}
 	
-	public static BufferedImage resizeImage(String imagePath, String ext, int maxX, int maxY) {
+	public static BufferedImage resizeImage(String imagePath, String ext, int x, int y) {
 
 		BufferedImage originalImage;
 		try {
-			originalImage = ImageIO.read(new File(imagePath));
+			originalImage = ImageIO.read(new File(imagePath));	
 			
-			if (originalImage.getWidth(null) < maxX && originalImage.getHeight(null) < maxY) {
-				return originalImage;
-			}
-			int reduction = 2;
-			while ((originalImage.getWidth(null) / reduction) > maxX || (originalImage.getHeight(null) / reduction) > maxY)
-				reduction *= 2;
-			
-			BufferedImage resizedImage = new BufferedImage((originalImage.getWidth(null) + 50) / reduction, (originalImage.getHeight(null) + 50) / reduction, BufferedImage.TYPE_INT_RGB);
+			BufferedImage resizedImage = new BufferedImage(x, y, BufferedImage.TYPE_INT_RGB);
 			Graphics2D graphic = (Graphics2D) resizedImage.createGraphics();
 			
 			graphic.addRenderingHints(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
-			graphic.drawImage(originalImage, 0, 0, (originalImage.getWidth(null) + 50) / reduction, (originalImage.getHeight(null) + 50) / reduction, null);
+			graphic.drawImage(originalImage, 0, 0, x, y, null);
 
 			ImageIO.write(resizedImage, ext, new File(imagePath));
 

@@ -15,6 +15,10 @@ public class ImageCleaner {
 	
 	public static Mat CleanImage(String path) {
 		Mat img = Imgcodecs.imread(path, 0);
+		if (img == null) {
+			System.err.println("Error: File not found.");
+			return null;
+		}
 		
 		Size size = new Size(3, 3);
 		
@@ -22,7 +26,7 @@ public class ImageCleaner {
 		Imgproc.adaptiveThreshold(img, img, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, 75, 10);
 		Core.bitwise_not(img, img);
 		
-		return deskew(img);
+		return img;
 	}
 	
 	private static Mat deskew(Mat img) {
@@ -55,11 +59,11 @@ public class ImageCleaner {
 			angle += 90.;
 		
 		System.out.println(angle);
-		
+		/*
 		Mat rotMat = Imgproc.getRotationMatrix2D(box.center, angle, 1);
 		Mat rotated = new Mat();
 		Imgproc.warpAffine(img, rotated, rotMat, img.size(), Imgproc.INTER_CUBIC);
-		
+		*/
 		Size size = box.size;
 		
 		if (box.angle < -45.) {
@@ -70,7 +74,7 @@ public class ImageCleaner {
 		
 		Mat cropped = new Mat();
 
-		Imgproc.getRectSubPix(rotated, size, box.center, cropped);
+		Imgproc.getRectSubPix(img, size, box.center, cropped);
 		return cropped;
 	}
 }
