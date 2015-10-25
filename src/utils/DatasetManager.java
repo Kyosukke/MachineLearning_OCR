@@ -111,17 +111,16 @@ public class DatasetManager {
 		List<int[]> widths = new ArrayList<int[]>();
 		
 		image_parts = ImageDisplayer.divideMat(img, divider);
-		System.out.println("part::" + image_parts.size());
 		for (Mat m : image_parts) {
-			lengths.add(getLengthFromMat(m, divider));
-			widths.add(getWidthFromMat(m, divider));
+			lengths.add(getLengthFromMat(m, 50, divider));
+			widths.add(getWidthFromMat(m, 50, divider));
 		}
 		
 		return new Character(c, lengths, widths);
 	}
 	
-	private static int[] getLengthFromMat(Mat img, int divider) {
-		int[] res = new int[50 / divider];
+	public static int[] getLengthFromMat(Mat img, int size, int divider) {
+		int[] res = new int[size / divider];
 		int cnt;
 		
 		for (int i = 0; i < img.cols(); i++) {
@@ -135,8 +134,8 @@ public class DatasetManager {
 		return res;
 	}
 	
-	private static int[] getWidthFromMat(Mat img, int divider) {
-		int[] res = new int[50 / divider];
+	public static int[] getWidthFromMat(Mat img, int size, int divider) {
+		int[] res = new int[size / divider];
 		int cnt;
 		
 		for (int i = 0; i < img.rows(); i++) {

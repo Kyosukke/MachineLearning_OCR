@@ -19,9 +19,7 @@ public class ImageCleaner {
 			System.err.println("Error: File not found.");
 			return null;
 		}
-		
 		Size size = new Size(3, 3);
-		
 		Imgproc.GaussianBlur(img, img, size, 0);
 		Imgproc.adaptiveThreshold(img, img, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, 75, 10);
 		Core.bitwise_not(img, img);
@@ -29,7 +27,7 @@ public class ImageCleaner {
 		return img;
 	}
 	
-	private static Mat deskew(Mat img) {
+	public static Mat deskew(Mat img) {
 		
 		/*
 		Mat elem = Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(5, 3));
@@ -37,19 +35,15 @@ public class ImageCleaner {
 		*/
 		
 		LinkedList<Point> points = new LinkedList<Point>();
-		
+
 		for (int y = 0; y < img.cols(); y++) {
 			for (int x = 0; x < img.rows(); x++) {
 				if (img.get(y, x) != null && img.get(y, x)[0] == 255) {
 					points.addLast(new Point(x, y));
-					System.out.print(" ");
 				}
-				else if (img.get(y, x) != null && img.get(y, x)[0] == 0)
-					System.out.print("0");
 			}
-			System.out.println();
 		}
-		
+
 		MatOfPoint2f obj = new MatOfPoint2f();
 		obj.fromList(points);
 		RotatedRect box = Imgproc.minAreaRect(obj);
@@ -57,7 +51,7 @@ public class ImageCleaner {
 		double angle = box.angle;
 		if (angle < -45.)
 			angle += 90.;
-		
+
 		System.out.println(angle);
 		/*
 		Mat rotMat = Imgproc.getRotationMatrix2D(box.center, angle, 1);
