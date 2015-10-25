@@ -8,7 +8,6 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.opencv.core.Mat;
 
@@ -19,12 +18,12 @@ public class CharacterRecognition {
 	
 	private static int KNN = 5;
 
-	public static char getCharacter(Mat img, List<Character> dataset) {
+	public static char getCharacter(Mat img, List<Character> dataset, int divider) {
 		int[] cnt = new int[127];
 		int match = 0;
-		Character c = new Character((char)0, DatasetManager.getLengthFromMat(img), DatasetManager.getWidthFromMat(img));
+		Character c = DatasetManager.createCharacter((char)0, img, divider);
 		
-		int[] res = getKNN(KNN, findLengthDiff(c, dataset), findWidthDiff(c, dataset), dataset.size());
+		int[] res = getKNN(KNN, findLengthDiff(c, dataset, divider), findWidthDiff(c, dataset, divider), dataset.size());
 		
 		for(int i = 0; i < KNN; i++) {
 			cnt[dataset.get(res[i]).getValue()] += 1 + (KNN - i);
@@ -66,38 +65,38 @@ public class CharacterRecognition {
 		return res;
 	}
 	
-	private static int[] findLengthDiff(Character c, List<Character> dataset) {
+	private static int[] findLengthDiff(Character c, List<Character> dataset, int divider) {
 		int[] res = new int[dataset.size()];
-		int diff;
 		
-		for (int i = 0; i < dataset.size(); i++) {
-			diff = 0;
-			for (int j = 0; j < 50; j++) {
-				diff += (c.getLength(j) > dataset.get(i).getLength(j)
-						? (c.getLength(j) - dataset.get(i).getLength(j))
-						: (dataset.get(i).getLength(j) - c.getLength(j)));
+		for (int i = 0; i < dataset.size() - 1; i++) {
+			for (int j = 0; j < divider * divider; j++) {
+				res[i] = findDiff(c.getLength().get(j), dataset.get(i).getLength().get(j), divider);
 			}
-			res[i] = diff;
 		}
 		
 		return res;
 	}
 	
-	private static int[] findWidthDiff(Character c, List<Character> dataset) {
+	private static int[] findWidthDiff(Character c, List<Character> dataset, int divider) {
 		int[] res = new int[dataset.size()];
-		int diff;
 		
 		for (int i = 0; i < dataset.size(); i++) {
-			diff = 0;
-			for (int j = 0; j < 50; j++) {
-				diff += (c.getWidth(j) > dataset.get(i).getWidth(j)
-						? (c.getWidth(j) - dataset.get(i).getWidth(j))
-						: (dataset.get(i).getWidth(j) - c.getWidth(j)));
+			for (int j = 0; j < divider * divider; j++) {
+				res[i] = findDiff(c.getWidth().get(j), dataset.get(i).getWidth().get(j), divider);
 			}
-			res[i] = diff;
 		}
 
 		return res;
+	}
+	
+	private static int findDiff(int[] c, int[] value, int divider) {
+		int diff = 0;
+		
+		for (int i = 0; i < 50 / divider; i++) {
+			diff += (c[i] > value[i]) ? (c[i] - value[i]) : (value[i] - c[i]);
+		}
+		
+		return diff;
 	}
 	
 	private static Map<Integer, Integer> sortByComparator(Map<Integer, Integer> unsortMap) {

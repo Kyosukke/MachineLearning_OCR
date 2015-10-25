@@ -10,6 +10,8 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -17,6 +19,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 
 import org.opencv.core.Mat;
+import org.opencv.core.Rect;
 
 //import sun.misc.BASE64Encoder;
 
@@ -24,22 +27,6 @@ import org.opencv.core.Mat;
  * Display image for debugger
  */
 public class ImageDisplayer {
-/*	public static String encoreToString(BufferedImage image, String type){
-    	String imageString = null;
-    	ByteArrayOutputStream bos = new ByteArrayOutputStream();
-    	
-    	try {
-    		ImageIO.write(image, type, bos);
-    		byte[] imageBytes = bos.toByteArray();
-    		
-    		BASE64Encoder encoder = new BASE64Encoder();
-    		imageString = encoder.encode(imageBytes);
-    		bos.close();
-    	} catch (Exception e) {
-    		e.printStackTrace();
-    	}
-    	return imageString;
-	}*/
 
 	public static BufferedImage Mat2BufferedImage(Mat m) {
 		int type = BufferedImage.TYPE_BYTE_GRAY;
@@ -60,6 +47,38 @@ public class ImageDisplayer {
 		System.arraycopy(b, 0, target_pixels, 0, b.length);
 		
 		return image;
+	}
+	
+	public static List<Mat> divideMat(Mat m, int divider) {
+		List<Rect> values = new ArrayList<Rect>();
+		
+		if (m.cols() % divider != 0 || m.rows() % divider != 0)
+			return null;
+
+		int step_x = m.rows() / divider;
+		int step_y = m.cols() / divider;
+		int x;
+		int y = 0;
+		
+		while (y < m.rows()) {
+			x = 0;
+			while (x < m.cols()) {
+				values.add(new Rect(x, y, step_x, step_y));
+				x += step_x;
+			}
+			y += step_y;
+		}
+		return cutMat(m, values);
+	}
+	
+	public static List<Mat> cutMat(Mat m, List<Rect> values) {
+		List<Mat> list = new ArrayList<Mat>();
+		
+		for (Rect r : values) {
+			list.add(new Mat(m, r));
+		}
+		
+		return list;
 	}
 	
 	public static BufferedImage resizeImage(String imagePath, String ext, int x, int y) {

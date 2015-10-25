@@ -11,22 +11,47 @@ import preprocessing.ImageCleaner;
 
 public class DatasetManager {
 
-	public static List<Character> getAlphaNumericFrom(List<String> paths, String fmt) {
+	public static List<Character> getAlphaNumericFrom(List<String> paths, int divider, String fmt) {
 		List<Character> dataset = new ArrayList<Character>();
 		Map<Integer, String> filename = getFileNames();
 		
 		for (String s : paths) {
 			for (int i = 32; i < 127; i++) {
-
+				
 				/* To resize character */
 				//ImageDisplayer.resizeImage(s + filename.get(i) + ".bmp", "BMP", 50, 50);
 
 				Mat img = ImageCleaner.CleanImage(s + filename.get(i) + fmt);
 				if (img == null)
 					continue;
-				dataset.add(new Character((char)i, getLengthFromMat(img), getWidthFromMat(img)));
+				dataset.add(createCharacter((char)i, img, divider));
 			}
-		}		
+		}
+		
+		/* external dataset */
+		int value = '0';
+		Mat img;
+		for (int i = 1; i < 7008; i++) {
+			img = ImageCleaner.CleanImage("assets/OCR/OCR_sample/" + (char)value + "-" + i + fmt);
+			
+			if (img == null || img.empty()) {
+				if (value < '9')
+					value++;
+				else if (value <= '9')
+					value = 'A';
+				else if (value <= 'Z') {
+					img = ImageCleaner.CleanImage("assets/OCR/OCR_sample/" + (char)(value + 32) + "-" + i + fmt);
+					
+					if (img == null || img.empty())
+						value++;
+					else
+						dataset.add(createCharacter((char)(value + 32), img, divider));
+				}
+				i--;
+			}
+			else
+				dataset.add(createCharacter((char)value, img, divider));
+		}
 		
 		return dataset;
 	}
@@ -80,8 +105,23 @@ public class DatasetManager {
 		return filename;
 	}
 	
-	public static int[] getLengthFromMat(Mat img) {
-		int[] res = new int[50];
+	public static Character createCharacter(char c, Mat img, int divider) {
+		List<Mat> image_parts;
+		List<int[]> lengths = new ArrayList<int[]>();
+		List<int[]> widths = new ArrayList<int[]>();
+		
+		image_parts = ImageDisplayer.divideMat(img, divider);
+		System.out.println("part::" + image_parts.size());
+		for (Mat m : image_parts) {
+			lengths.add(getLengthFromMat(m, divider));
+			widths.add(getWidthFromMat(m, divider));
+		}
+		
+		return new Character(c, lengths, widths);
+	}
+	
+	private static int[] getLengthFromMat(Mat img, int divider) {
+		int[] res = new int[50 / divider];
 		int cnt;
 		
 		for (int i = 0; i < img.cols(); i++) {
@@ -95,8 +135,8 @@ public class DatasetManager {
 		return res;
 	}
 	
-	public static int[] getWidthFromMat(Mat img) {
-		int[] res = new int[50];
+	private static int[] getWidthFromMat(Mat img, int divider) {
+		int[] res = new int[50 / divider];
 		int cnt;
 		
 		for (int i = 0; i < img.rows(); i++) {
