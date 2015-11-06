@@ -20,14 +20,16 @@ public class ImageCleaner {
 			return null;
 		}
 		
-		return CleanImage(img);
+		return CleanImage(img, true);
 	}
 	
-	public static Mat CleanImage(Mat img) {
+	public static Mat CleanImage(Mat img, boolean bitWise) {
 		Size size = new Size(3, 3);
 		Imgproc.GaussianBlur(img, img, size, 0);
 		Imgproc.adaptiveThreshold(img, img, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, 75, 10);
-		Core.bitwise_not(img, img);
+		
+		if (bitWise)
+			Core.bitwise_not(img, img);
 		
 		return img;
 	}
@@ -49,6 +51,9 @@ public class ImageCleaner {
 			}
 		}
 
+		if (points.isEmpty())
+			return img;
+
 		MatOfPoint2f obj = new MatOfPoint2f();
 		obj.fromList(points);
 		RotatedRect box = Imgproc.minAreaRect(obj);
@@ -57,7 +62,6 @@ public class ImageCleaner {
 		if (angle < -45.)
 			angle += 90.;
 
-		System.out.println(angle);
 		/*
 		Mat rotMat = Imgproc.getRotationMatrix2D(box.center, angle, 1);
 		Mat rotated = new Mat();

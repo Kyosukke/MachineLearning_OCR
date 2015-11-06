@@ -63,13 +63,13 @@ public class TextRecognition {
 			
 			for (int i = 0; i < m.cols();  i++)
 			{
-				if (height[i] <= 5 && !isPreviousEmpty) {
+				if (height[i] <= 0 && !isPreviousEmpty) {
 					isPreviousEmpty = true;
 					rects.add(new Rect(first_x, 0, last_x - first_x, m.rows()));
-					first_x = last_x;					
+					first_x = last_x;
 				}
 				
-				else if (height[i] > 5)
+				else if (height[i] > 0)
 					isPreviousEmpty = false;
 				last_x++;
 			}
@@ -80,8 +80,11 @@ public class TextRecognition {
 			
 			letters = MatManager.cutMat(txt, rects);
 			for (Mat l : letters) {
-				ImageDisplayer.displayImage(MatManager.Mat2BufferedImage(l), "t");
+/*				l = ImageCleaner.deskew(l);
 				l = MatManager.resizeMat(l, 20);
+				l = ImageCleaner.CleanImage(l, false);*/
+				if (!l.empty())
+					ImageDisplayer.displayImage(MatManager.Mat2BufferedImage(l), "t");
 				text += CharacterRecognition.getCharacter(l, dataset, k);
 			}
 		}

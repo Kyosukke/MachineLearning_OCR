@@ -18,11 +18,10 @@ public class DatasetManager {
 		for (String s : paths) {
 			for (int i = 32; i < 127; i++) {
 				
-
 				Mat img = ImageCleaner.CleanImage(s + filename.get(i) + fmt);
-//				img = ImageCleaner.deskew(img);
-				ImageDisplayer.displayImage(MatManager.Mat2BufferedImage(img), "test");
+				img = ImageCleaner.deskew(img);
 				img = MatManager.resizeMat(img, 20);
+				img = ImageCleaner.CleanImage(img, false);
 				if (img == null)
 					continue;
 				dataset.add(new Character((char)i, MatManager.getDataFromMat(img)));

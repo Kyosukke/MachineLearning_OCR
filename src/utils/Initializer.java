@@ -33,11 +33,12 @@ public class Initializer {
 
 		System.out.println("k: " + k);
 		
-		Mat img = ImageCleaner.CleanImage(path_member + "abbar_s/step1/abbar_s-" + "A" + ".bmp");
-		
-		System.out.println("Character Found: " + CharacterRecognition.getCharacter(img, dataset, k));
-		
 		if (true)
-			System.out.println("txt: " + TextRecognition.readText(path_test2 + "paf.bmp", dataset, k));
+			System.out.println("txt: " + TextRecognition.readText(path_member + "victor_j/step2/nature.bmp", dataset, k));
+		else {
+			Mat img = ImageCleaner.CleanImage(path_member + "abbar_s/step1/abbar_s-" + "O" + ".bmp");
+			System.out.println("Character Found: " + CharacterRecognition.getCharacter(img, dataset, k));
+			
+		}
 	}
 }
