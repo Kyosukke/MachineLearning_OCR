@@ -29,11 +29,15 @@ public class Initializer {
 
 		dataset = DatasetManager.getAlphaNumericFrom(paths, ".bmp");
 		
-		Mat img = ImageCleaner.CleanImage(path_member + "abbar_s/step1/abbar_s-" + "a_small" + ".bmp");
+		int k = CharacterRecognition.findK(path_member + "abbar_s/step1/abbar_s-", dataset, ".bmp");
+
+		System.out.println("k: " + k);
 		
-		System.out.println("Character Found: " + CharacterRecognition.getCharacter(img, dataset));
+		Mat img = ImageCleaner.CleanImage(path_member + "abbar_s/step1/abbar_s-" + "A" + ".bmp");
 		
-		if (false)
-			TextRecognition.readText(path_test2 + "paf.bmp");
+		System.out.println("Character Found: " + CharacterRecognition.getCharacter(img, dataset, k));
+		
+		if (true)
+			System.out.println("txt: " + TextRecognition.readText(path_test2 + "paf.bmp", dataset, k));
 	}
 }

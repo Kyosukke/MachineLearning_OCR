@@ -12,9 +12,11 @@ import utils.MatManager;
 
 public class TextRecognition {
 
-	public static String readText(String path) {
+	public static String readText(String path, List<utils.Character> dataset, int k) {
+		String text = "";
 		Mat txt = ImageCleaner.CleanImage(path);
 		List<Mat> lines;
+		List<Mat> letters;
 		List<Rect> rects = new ArrayList<Rect>();
 		int[] width = MatManager.getWidthFromMat(txt);
 
@@ -38,25 +40,21 @@ public class TextRecognition {
 		}
 		
 		lines = MatManager.cutMat(txt, rects);
-
+/*
 		int j = 0;
 		for (Mat m : lines) {
 			ImageDisplayer.displayImage(MatManager.Mat2BufferedImage(m), "t");
 			if (j >= 0)
 				break;
 			j++;
-		}
-		
+		}*/
+
 		// decoupage en mot de chaque ligne
 		
-		
-		j = 0;
-		
+		rects.clear();
+
 		for (Mat m : lines)
 		{
-			List<Mat> words;
-			rects = new ArrayList<Rect>();
-			
 			int[] height = MatManager.getLengthFromMat(m);
 			
 			int first_x = 0;
@@ -65,37 +63,29 @@ public class TextRecognition {
 			
 			for (int i = 0; i < m.cols();  i++)
 			{
-				if (height[i] <= 0 && !isPreviousEmpty) {
+				if (height[i] <= 5 && !isPreviousEmpty) {
 					isPreviousEmpty = true;
-					System.out.println("x:" + first_x + " y:0 h:" + m.rows() + " w:" + (last_x - first_x) );
 					rects.add(new Rect(first_x, 0, last_x - first_x, m.rows()));
 					first_x = last_x;					
 				}
 				
-				else if (height[i] > 0)
+				else if (height[i] > 5)
 					isPreviousEmpty = false;
 				last_x++;
-				System.out.println("i:" + i + " py:" + height[i]);
 			}
 			
 			if (last_x - first_x > 0) {
-				System.out.println("x:" + first_x + " y:0 h:" + m.rows() + " w:" + (last_x - first_x) );
 				rects.add(new Rect(first_x, 0, last_x - first_x, m.rows()));
 			}
 			
-			words = MatManager.cutMat(txt, rects);
-			
-			for (Mat mbis : words) {
-				ImageDisplayer.displayImage(MatManager.Mat2BufferedImage(mbis), "t");
+			letters = MatManager.cutMat(txt, rects);
+			for (Mat l : letters) {
+				ImageDisplayer.displayImage(MatManager.Mat2BufferedImage(l), "t");
+				l = MatManager.resizeMat(l, 20);
+				text += CharacterRecognition.getCharacter(l, dataset, k);
 			}
-			
-			if (j >= 0)
-				break;
-			j++;
 		}
-
 		
-		
-		return null;
+		return text;
 	}
 }

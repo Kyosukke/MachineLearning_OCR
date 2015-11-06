@@ -1,8 +1,10 @@
 package charrecognition;
 
 public class FormulaManager {
+	
+	private static int size = 20; // pixels of image - 20*20
 
-	public static double euclidianDistance(double[] x, double[] y, int size) {
+	public static double euclidianDistance(double[] x, double[] y) {
 		double sum = 0.0;
 		double distance = 0.0;
 		
@@ -15,7 +17,7 @@ public class FormulaManager {
 		return distance;
 	}
 	
-	public static double chebyshevDistance(double[] x, double[] y, int size) {
+	public static double chebyshevDistance(double[] x, double[] y) {
 		double[] sum = new double[size];
 		double max = 0.0;
 		
@@ -31,7 +33,7 @@ public class FormulaManager {
 		return max;
 	}
 	
-	public static double manhattanDistance(double[] x, double[] y, int size) {
+	public static double manhattanDistance(double[] x, double[] y) {
 		double sum = 0.0;
 		double distance = 0.0;
 		

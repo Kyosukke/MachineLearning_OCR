@@ -8,6 +8,8 @@ import java.util.List;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
 
 public class MatManager {
 	
@@ -122,6 +124,14 @@ public class MatManager {
 			res[i] = cnt;
 		}
 		
+		return res;
+	}
+	
+	public static Mat resizeMat(Mat img, int size) {
+		Mat res = new Mat();
+		
+		Imgproc.resize(img, res, new Size(size, size));
+
 		return res;
 	}
 }

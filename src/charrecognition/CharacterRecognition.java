@@ -8,25 +8,44 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import org.opencv.core.Mat;
 
+import preprocessing.ImageCleaner;
 import utils.Character;
+import utils.DatasetManager;
 import utils.MatManager;
 
 public class CharacterRecognition {
 	
-	private static int KNN = 5;
-
-	public static char getCharacter(Mat img, List<Character> dataset) {
+	public static int findK(String pathForTest, List<Character> dataset, String fmt) {
+		Mat img = new Mat();
+		Random rdm = new Random();
+		Map<Integer, String> filenames = DatasetManager.getFileNames();
+		int i = 0;
+		int k = 0;
+		
+		do {
+			k++;
+			i = 32 + Math.abs(rdm.nextInt()) % (126 - 32 + 1);
+			System.out.println("rdm: " + i);
+			img = ImageCleaner.CleanImage(pathForTest + filenames.get(i) + fmt);
+		}
+		while ((char)i != CharacterRecognition.getCharacter(img, dataset, k) && k < dataset.size());
+		
+		return k;
+	}
+	
+	public static char getCharacter(Mat img, List<Character> dataset, int k) {
 		int[] cnt = new int[127];
 		int match = 0;
 		double[] toFind = MatManager.getDataFromMat(img);
 		
-		int[] res = getKNN(KNN, toFind, dataset);
+		int[] res = getKNN(k, toFind, dataset);
 		
-		for(int i = 0; i < KNN; i++) {
-			cnt[dataset.get(res[i]).getValue()] += 1 + (KNN - i);
+		for(int i = 0; i < k; i++) {
+			cnt[dataset.get(res[i]).getValue()] += 1 + (k - i);
 			System.out.println("SIM CHAR:" + dataset.get(res[i]).getValue());
 		}
 		
@@ -43,7 +62,7 @@ public class CharacterRecognition {
 		int[] res = new int[k];
 		
 		for (int i = 0; i < dataset.size(); i++) {
-			tmp.put(i, FormulaManager.euclidianDistance(toFind, dataset.get(i).getData(), 100));
+			tmp.put(i, FormulaManager.euclidianDistance(toFind, dataset.get(i).getData()));
 		}
 		
 		Map<Integer, Double> sorted = sortByComparator(tmp);
