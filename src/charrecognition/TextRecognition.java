@@ -38,10 +38,63 @@ public class TextRecognition {
 		}
 		
 		lines = MatManager.cutMat(txt, rects);
-		
+
+		int j = 0;
 		for (Mat m : lines) {
 			ImageDisplayer.displayImage(MatManager.Mat2BufferedImage(m), "t");
+			if (j >= 0)
+				break;
+			j++;
 		}
+		
+		// decoupage en mot de chaque ligne
+		
+		
+		j = 0;
+		
+		for (Mat m : lines)
+		{
+			List<Mat> words;
+			rects = new ArrayList<Rect>();
+			
+			int[] height = MatManager.getLengthFromMat(m);
+			
+			int first_x = 0;
+			int last_x = 0;
+			isPreviousEmpty = true;
+			
+			for (int i = 0; i < m.cols();  i++)
+			{
+				if (height[i] <= 0 && !isPreviousEmpty) {
+					isPreviousEmpty = true;
+					System.out.println("x:" + first_x + " y:0 h:" + m.rows() + " w:" + (last_x - first_x) );
+					rects.add(new Rect(first_x, 0, last_x - first_x, m.rows()));
+					first_x = last_x;					
+				}
+				
+				else if (height[i] > 0)
+					isPreviousEmpty = false;
+				last_x++;
+				System.out.println("i:" + i + " py:" + height[i]);
+			}
+			
+			if (last_x - first_x > 0) {
+				System.out.println("x:" + first_x + " y:0 h:" + m.rows() + " w:" + (last_x - first_x) );
+				rects.add(new Rect(first_x, 0, last_x - first_x, m.rows()));
+			}
+			
+			words = MatManager.cutMat(txt, rects);
+			
+			for (Mat mbis : words) {
+				ImageDisplayer.displayImage(MatManager.Mat2BufferedImage(mbis), "t");
+			}
+			
+			if (j >= 0)
+				break;
+			j++;
+		}
+
+		
 		
 		return null;
 	}
