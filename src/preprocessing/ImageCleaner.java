@@ -19,6 +19,11 @@ public class ImageCleaner {
 			System.err.println("Error: File not found.");
 			return null;
 		}
+		
+		return CleanImage(img);
+	}
+	
+	public static Mat CleanImage(Mat img) {
 		Size size = new Size(3, 3);
 		Imgproc.GaussianBlur(img, img, size, 0);
 		Imgproc.adaptiveThreshold(img, img, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, 75, 10);

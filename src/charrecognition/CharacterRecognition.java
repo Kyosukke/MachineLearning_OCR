@@ -12,18 +12,18 @@ import java.util.Map;
 import org.opencv.core.Mat;
 
 import utils.Character;
-import utils.DatasetManager;
+import utils.MatManager;
 
 public class CharacterRecognition {
 	
 	private static int KNN = 5;
 
-	public static char getCharacter(Mat img, List<Character> dataset, int divider) {
+	public static char getCharacter(Mat img, List<Character> dataset) {
 		int[] cnt = new int[127];
 		int match = 0;
-		Character c = DatasetManager.createCharacter((char)0, img, divider);
+		double[] toFind = MatManager.getDataFromMat(img);
 		
-		int[] res = getKNN(KNN, findLengthDiff(c, dataset, divider), findWidthDiff(c, dataset, divider), dataset.size());
+		int[] res = getKNN(KNN, toFind, dataset);
 		
 		for(int i = 0; i < KNN; i++) {
 			cnt[dataset.get(res[i]).getValue()] += 1 + (KNN - i);
@@ -36,26 +36,17 @@ public class CharacterRecognition {
 		}
 		
 		return (char)match;
-		/*
-		try {
-			Tesseract instance = Tesseract.getInstance();
-			String str = instance.doOCR(ImageDisplayer.Mat2BufferedImage(img));
-			System.out.println("Result: " + str);
-		}
-		catch (TesseractException e){
-			System.err.println(e.getMessage());
-		}*/
 	}
 	
-	private static int[] getKNN(int k, int[] length, int[] width, int size) {
-		Map<Integer, Integer> tmp = new HashMap<Integer, Integer>();
+	private static int[] getKNN(int k, double[] toFind, List<Character> dataset) {
+		Map<Integer, Double> tmp = new HashMap<Integer, Double>();
 		int[] res = new int[k];
 		
-		for (int i = 0; i < size; i++) {
-			tmp.put(i, length[i] + width[i]);
+		for (int i = 0; i < dataset.size(); i++) {
+			tmp.put(i, FormulaManager.euclidianDistance(toFind, dataset.get(i).getData(), 100));
 		}
 		
-		Map<Integer, Integer> sorted = sortByComparator(tmp);
+		Map<Integer, Double> sorted = sortByComparator(tmp);
 		Object[] keys = sorted.keySet().toArray();
 		
 		for (int i = 0; i < k; i++) {
@@ -65,58 +56,24 @@ public class CharacterRecognition {
 		return res;
 	}
 	
-	private static int[] findLengthDiff(Character c, List<Character> dataset, int divider) {
-		int[] res = new int[dataset.size()];
-		
-		for (int i = 0; i < dataset.size() - 1; i++) {
-			for (int j = 0; j < divider * divider; j++) {
-				res[i] = findDiff(c.getLength().get(j), dataset.get(i).getLength().get(j), divider);
-			}
-		}
-		
-		return res;
-	}
-	
-	private static int[] findWidthDiff(Character c, List<Character> dataset, int divider) {
-		int[] res = new int[dataset.size()];
-		
-		for (int i = 0; i < dataset.size(); i++) {
-			for (int j = 0; j < divider * divider; j++) {
-				res[i] = findDiff(c.getWidth().get(j), dataset.get(i).getWidth().get(j), divider);
-			}
-		}
-
-		return res;
-	}
-	
-	private static int findDiff(int[] c, int[] value, int divider) {
-		int diff = 0;
-		
-		for (int i = 0; i < 50 / divider; i++) {
-			diff += (c[i] > value[i]) ? (c[i] - value[i]) : (value[i] - c[i]);
-		}
-		
-		return diff;
-	}
-	
-	private static Map<Integer, Integer> sortByComparator(Map<Integer, Integer> unsortMap) {
+	private static Map<Integer, Double> sortByComparator(Map<Integer, Double> unsortMap) {
 
 		// Convert Map to List
-		List<Map.Entry<Integer, Integer>> list = 
-			new LinkedList<Map.Entry<Integer, Integer>>(unsortMap.entrySet());
+		List<Map.Entry<Integer, Double>> list = 
+			new LinkedList<Map.Entry<Integer, Double>>(unsortMap.entrySet());
 
 		// Sort list with comparator, to compare the Map values
-		Collections.sort(list, new Comparator<Map.Entry<Integer, Integer>>() {
-			public int compare(Map.Entry<Integer, Integer> o1,
-                                           Map.Entry<Integer, Integer> o2) {
+		Collections.sort(list, new Comparator<Map.Entry<Integer, Double>>() {
+			public int compare(Map.Entry<Integer, Double> o1,
+                                           Map.Entry<Integer, Double> o2) {
 				return (o1.getValue()).compareTo(o2.getValue());
 			}
 		});
 
 		// Convert sorted map back to a Map
-		Map<Integer, Integer> sortedMap = new LinkedHashMap<Integer, Integer>();
-		for (Iterator<Map.Entry<Integer, Integer>> it = list.iterator(); it.hasNext();) {
-			Map.Entry<Integer, Integer> entry = it.next();
+		Map<Integer, Double> sortedMap = new LinkedHashMap<Integer, Double>();
+		for (Iterator<Map.Entry<Integer, Double>> it = list.iterator(); it.hasNext();) {
+			Map.Entry<Integer, Double> entry = it.next();
 			sortedMap.put(entry.getKey(), entry.getValue());
 		}
 		return sortedMap;

@@ -1,17 +1,13 @@
 package utils;
 
-import java.util.List;
-
 public class Character {
 
 	private char value;
-	private List<int[]> length;
-	private List<int[]> width;
+	private double[] data;
 
-	public Character(char value, List<int[]> length, List<int[]> width) {
+	public Character(char value, double[] data) {
 		this.value = value;
-		this.length = length;
-		this.width = width;
+		this.data = data;
 	}
 	
 	public char getValue() {
@@ -22,19 +18,11 @@ public class Character {
 		this.value = value;
 	}
 
-	public List<int[]> getLength() {
-		return length;
+	public double[] getData() {
+		return data;
 	}
 
-	public void setLength(List<int[]> length) {
-		this.length = length;
-	}
-
-	public List<int[]> getWidth() {
-		return width;
-	}
-
-	public void setWidth(List<int[]> width) {
-		this.width = width;
+	public void setData(double[] data) {
+		this.data = data;
 	}
 }

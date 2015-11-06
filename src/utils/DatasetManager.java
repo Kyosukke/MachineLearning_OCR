@@ -11,7 +11,7 @@ import preprocessing.ImageCleaner;
 
 public class DatasetManager {
 
-	public static List<Character> getAlphaNumericFrom(List<String> paths, int divider, String fmt) {
+	public static List<Character> getAlphaNumericFrom(List<String> paths, String fmt) {
 		List<Character> dataset = new ArrayList<Character>();
 		Map<Integer, String> filename = getFileNames();
 		
@@ -24,7 +24,7 @@ public class DatasetManager {
 				Mat img = ImageCleaner.CleanImage(s + filename.get(i) + fmt);
 				if (img == null)
 					continue;
-				dataset.add(createCharacter((char)i, img, divider));
+				dataset.add(new Character((char)i, MatManager.getDataFromMat(img)));
 			}
 		}
 		
@@ -45,12 +45,12 @@ public class DatasetManager {
 					if (img == null || img.empty())
 						value++;
 					else
-						dataset.add(createCharacter((char)(value + 32), img, divider));
+						dataset.add(new Character((char)(value + 32), MatManager.getDataFromMat(img)));
 				}
 				i--;
 			}
 			else
-				dataset.add(createCharacter((char)value, img, divider));
+				dataset.add(new Character((char)value, MatManager.getDataFromMat(img)));
 		}
 		
 		return dataset;
@@ -103,49 +103,5 @@ public class DatasetManager {
 		}
 		
 		return filename;
-	}
-	
-	public static Character createCharacter(char c, Mat img, int divider) {
-		List<Mat> image_parts;
-		List<int[]> lengths = new ArrayList<int[]>();
-		List<int[]> widths = new ArrayList<int[]>();
-		
-		image_parts = ImageDisplayer.divideMat(img, divider);
-		for (Mat m : image_parts) {
-			lengths.add(getLengthFromMat(m, 50, divider));
-			widths.add(getWidthFromMat(m, 50, divider));
-		}
-		
-		return new Character(c, lengths, widths);
-	}
-	
-	public static int[] getLengthFromMat(Mat img, int size, int divider) {
-		int[] res = new int[size / divider];
-		int cnt;
-		
-		for (int i = 0; i < img.cols(); i++) {
-			cnt = 0;
-			for (int j = 0; j < img.rows(); j++)
-				if (img.get(j, i) != null && img.get(j, i)[0] == 255)
-					cnt++;
-			res[i] = cnt;
-		}
-		
-		return res;
-	}
-	
-	public static int[] getWidthFromMat(Mat img, int size, int divider) {
-		int[] res = new int[size / divider];
-		int cnt;
-		
-		for (int i = 0; i < img.rows(); i++) {
-			cnt = 0;
-			for (int j = 0; j < img.cols(); j++)
-				if (img.get(i, j) != null && img.get(i, j)[0] == 255)
-					cnt++;
-			res[i] = cnt;
-		}
-		
-		return res;
 	}
 }
