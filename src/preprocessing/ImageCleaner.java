@@ -24,6 +24,9 @@ public class ImageCleaner {
 	}
 	
 	public static Mat CleanImage(Mat img, boolean bitWise) {
+		if (img == null) {
+			return null;
+		}
 		Size size = new Size(3, 3);
 		Imgproc.GaussianBlur(img, img, size, 0);
 		Imgproc.adaptiveThreshold(img, img, 255, Imgproc.ADAPTIVE_THRESH_MEAN_C, Imgproc.THRESH_BINARY, 75, 10);
@@ -43,11 +46,10 @@ public class ImageCleaner {
 		
 		LinkedList<Point> points = new LinkedList<Point>();
 
-		for (int y = 0; y < img.cols(); y++) {
-			for (int x = 0; x < img.rows(); x++) {
-				if (img.get(y, x) != null && img.get(y, x)[0] == 255) {
+		for (int x = 0; x < img.rows(); x++) {
+			for (int y = 0; y < img.cols(); y++) {
+				if (img.get(x, y) != null && img.get(x, y)[0] == 255)
 					points.addLast(new Point(x, y));
-				}
 			}
 		}
 
@@ -62,13 +64,12 @@ public class ImageCleaner {
 		if (angle < -45.)
 			angle += 90.;
 
-		/*
 		Mat rotMat = Imgproc.getRotationMatrix2D(box.center, angle, 1);
 		Mat rotated = new Mat();
 		Imgproc.warpAffine(img, rotated, rotMat, img.size(), Imgproc.INTER_CUBIC);
-		*/
+
 		Size size = box.size;
-		
+
 		if (box.angle < -45.) {
 			double tmp = size.width;
 			size.width = size.height;

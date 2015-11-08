@@ -29,7 +29,6 @@ public class CharacterRecognition {
 		do {
 			k++;
 			i = 32 + Math.abs(rdm.nextInt()) % (126 - 32 + 1);
-			System.out.println("rdm: " + i);
 			img = ImageCleaner.CleanImage(pathForTest + filenames.get(i) + fmt);
 		}
 		while ((char)i != CharacterRecognition.getCharacter(img, dataset, k) && k < dataset.size());
@@ -62,7 +61,8 @@ public class CharacterRecognition {
 		int[] res = new int[k];
 		
 		for (int i = 0; i < dataset.size(); i++) {
-			tmp.put(i, FormulaManager.euclidianDistance(toFind, dataset.get(i).getData()));
+			if (dataset.get(i).getData() != null)
+				tmp.put(i, FormulaManager.euclidianDistance(toFind, dataset.get(i).getData()));
 		}
 		
 		Map<Integer, Double> sorted = sortByComparator(tmp);

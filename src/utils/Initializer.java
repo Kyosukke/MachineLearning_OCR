@@ -36,7 +36,7 @@ public class Initializer {
 		if (true)
 			System.out.println("txt: " + TextRecognition.readText(path_member + "victor_j/step2/nature.bmp", dataset, k));
 		else {
-			Mat img = ImageCleaner.CleanImage(path_member + "abbar_s/step1/abbar_s-" + "O" + ".bmp");
+			Mat img = ImageCleaner.CleanImage(path_member + "abbar_s/step1/abbar_s-" + "Z" + ".bmp");
 			System.out.println("Character Found: " + CharacterRecognition.getCharacter(img, dataset, k));
 			
 		}

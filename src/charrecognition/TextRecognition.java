@@ -35,19 +35,14 @@ public class TextRecognition {
 				isPreviousEmpty = false;
 			last_y++;
 		}
+		
+		/* Add last square */
+		/*
 		if (last_y - first_y > 0) {
 			rects.add(new Rect(0, first_y, txt.cols(), last_y - first_y));
-		}
+		}*/
 		
 		lines = MatManager.cutMat(txt, rects);
-/*
-		int j = 0;
-		for (Mat m : lines) {
-			ImageDisplayer.displayImage(MatManager.Mat2BufferedImage(m), "t");
-			if (j >= 0)
-				break;
-			j++;
-		}*/
 
 		// decoupage en mot de chaque ligne
 		
@@ -74,17 +69,23 @@ public class TextRecognition {
 				last_x++;
 			}
 			
+			/* Add last square */
+			
+			/*
 			if (last_x - first_x > 0) {
 				rects.add(new Rect(first_x, 0, last_x - first_x, m.rows()));
-			}
+			}*/
+			
+			
+			/* Clean all Mat and use OCR */
 			
 			letters = MatManager.cutMat(txt, rects);
 			for (Mat l : letters) {
-/*				l = ImageCleaner.deskew(l);
-				l = MatManager.resizeMat(l, 20);
-				l = ImageCleaner.CleanImage(l, false);*/
-				if (!l.empty())
-					ImageDisplayer.displayImage(MatManager.Mat2BufferedImage(l), "t");
+				if (!l.empty()) {
+					l = MatManager.cropMat(l);
+					l = MatManager.resizeMat(l, 10);
+					l = ImageCleaner.CleanImage(l, false);
+				}
 				text += CharacterRecognition.getCharacter(l, dataset, k);
 			}
 		}

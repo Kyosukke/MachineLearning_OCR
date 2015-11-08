@@ -19,11 +19,9 @@ public class DatasetManager {
 			for (int i = 32; i < 127; i++) {
 				
 				Mat img = ImageCleaner.CleanImage(s + filename.get(i) + fmt);
-				img = ImageCleaner.deskew(img);
-				img = MatManager.resizeMat(img, 20);
+				img = MatManager.cropMat(img);
+				img = MatManager.resizeMat(img, 10);
 				img = ImageCleaner.CleanImage(img, false);
-				if (img == null)
-					continue;
 				dataset.add(new Character((char)i, MatManager.getDataFromMat(img)));
 			}
 		}
@@ -44,13 +42,21 @@ public class DatasetManager {
 					
 					if (img == null || img.empty())
 						value++;
-					else
+					else {
+						img = MatManager.cropMat(img);
+						img = MatManager.resizeMat(img, 10);
+						img = ImageCleaner.CleanImage(img, false);
 						dataset.add(new Character((char)(value + 32), MatManager.getDataFromMat(img)));
+					}
 				}
 				i--;
 			}
-			else
+			else {
+				img = MatManager.cropMat(img);
+				img = MatManager.resizeMat(img, 10);
+				img = ImageCleaner.CleanImage(img, false);
 				dataset.add(new Character((char)value, MatManager.getDataFromMat(img)));
+			}
 		}
 		
 		return dataset;

@@ -75,6 +75,9 @@ public class MatManager {
 	}
 	
 	public static double[] getDataFromMat(Mat img) {
+		if (img == null) {
+			return null;
+		}
 		double[] res = new double[img.rows() + img.cols()];
 		int cnt;
 		
@@ -133,5 +136,58 @@ public class MatManager {
 		Imgproc.resize(img, res, new Size(size, size));
 
 		return res;
+	}
+	
+	public static Mat cropMat(Mat img) {
+		int xMin = -1;
+		int yMin = -1;
+		int xMax = -1;
+		int yMax = -1;
+		
+		boolean isEmpty;
+		
+		for (int y = 0; y < img.rows(); y++) {
+			isEmpty = false;
+			for (int x = 0; x < img.cols(); x++) {
+				if (img.get(y, x)[0] == 255) {
+					isEmpty = true;
+					if (yMin == -1)
+						yMin = y;
+				}
+				if (isEmpty == false && yMin != -1 && yMax == -1) {
+					yMax = y;
+				}
+				else if (isEmpty == true && yMax != -1) {
+					yMax = -1;
+				}
+			}
+		}
+		if (yMax == -1)
+			yMax = img.rows();
+		if (yMin == -1)
+			yMin = 0;
+		
+		for (int x = 0; x < img.cols(); x++) {
+			isEmpty = false;
+			for (int y = 0; y < img.rows(); y++) {
+				if (img.get(y, x)[0] == 255) {
+					isEmpty = true;
+					if (xMin == -1)
+						xMin = x;
+				}
+				if (isEmpty == false && xMin != -1 && xMax == -1) {
+					xMax = x;
+				}
+				else if (isEmpty == true && xMax != -1) {
+					xMax = -1;
+				}
+			}
+		}
+		if (xMax == -1)
+			xMax = img.cols();
+		if (xMin == -1)
+			xMin = 0;
+		
+		return new Mat(img, new Rect(xMin, yMin, xMax - xMin, yMax - yMin));
 	}
 }
