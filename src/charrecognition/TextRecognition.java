@@ -20,7 +20,7 @@ public class TextRecognition {
 		List<Rect> rects = new ArrayList<Rect>();
 		int[] width = MatManager.getWidthFromMat(txt);
 
-		ImageDisplayer.displayImage(MatManager.Mat2BufferedImage(txt), "text");
+		//ImageDisplayer.displayImage(MatManager.Mat2BufferedImage(txt), "text");
 		
 		int first_y = 0;
 		int last_y = 0;

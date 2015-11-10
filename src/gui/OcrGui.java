@@ -1,12 +1,9 @@
 package gui;
 
 import java.awt.AlphaComposite;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -14,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -21,11 +19,10 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import charrecognition.TextRecognition;
+import utils.Character;
 
-import com.sun.javafx.tk.Toolkit;
-
+@SuppressWarnings("serial")
 public class OcrGui extends JFrame implements ActionListener{
 
 	JButton getImage;
@@ -33,9 +30,18 @@ public class OcrGui extends JFrame implements ActionListener{
 	JLabel jlabel;
 	Dimension size;
 	Insets insets;
+	List<Character> dataset;
+	int k;
 	
 	public OcrGui() {
+		
+	}
+	
+	public OcrGui(List<Character> dataset, int k) {
 		// TODO Auto-generated constructor stub
+		this.dataset = dataset;
+		this.k = k;
+		
 		this.setTitle("MachineLearning- OCR");
 		this.setSize(600, 800);
 		this.setResizable(true);
@@ -46,7 +52,6 @@ public class OcrGui extends JFrame implements ActionListener{
 		getImage = new JButton("Rechercher Image");
 		JLabel textAnalysisImage = new JLabel("Image en cours d'analyse:");
 		JLabel textLabelResult = new JLabel("Texte ou charactère trouvé:");
-		JLabel textResult = new JLabel("");
 		
 		getImage.addActionListener(this);
 		this.getContentPane().add(getImage);
@@ -67,7 +72,7 @@ public class OcrGui extends JFrame implements ActionListener{
 		this.setBackground(Color.ORANGE);
 		this.setVisible(true);
 	}
-	
+
 	public void setFile(String name) {
 		filename = name;
 	}
@@ -101,12 +106,12 @@ public class OcrGui extends JFrame implements ActionListener{
 			int returnVal = fc.showSaveDialog(this);
 			if(returnVal == JFileChooser.APPROVE_OPTION) {
 			   File file = fc.getSelectedFile();
-			   System.out.print(file);
+			   //System.out.print(file);
 			   this.setFile(file.toString());
 			   try {
 				Image image = ImageIO.read(file);
 				ImageIcon icon = new ImageIcon(image);
-				System.out.print("Image Width" + icon.getIconWidth());
+				//System.out.print("Image Width" + icon.getIconWidth());
 				if (icon.getIconWidth() != 50) {
 					image = createResizedCopy(image, 400, 500, true);
 				} else if (icon.getIconWidth() == 50){
@@ -129,6 +134,21 @@ public class OcrGui extends JFrame implements ActionListener{
 			   icon = null;
 			   this.revalidate();
 			   this.repaint();
+			
+			   
+			   JLabel result = new JLabel(TextRecognition.readText(this.filename, dataset, k)); 
+			   
+			   this.getContentPane().remove(result);
+			   this.invalidate();
+			   this.validate();
+			   this.repaint();
+			   
+			   this.getContentPane().add(result);
+			   size = result.getPreferredSize();
+			   result.setBounds(55 + insets.left, 720 + insets.top, size.width, size.height);
+			   this.revalidate();
+			   this.repaint();
+			   
 			   } catch (IOException e1) {
 				   // TODO Auto-generated catch block
 				   e1.printStackTrace();
