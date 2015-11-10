@@ -28,7 +28,8 @@ public class CharacterRecognition {
 		
 		do {
 			k++;
-			i = 32 + Math.abs(rdm.nextInt()) % (126 - 32 + 1);
+			i = 48 + Math.abs(rdm.nextInt()) % (58 - 48 + 1);
+//			i = 32 + Math.abs(rdm.nextInt()) % (126 - 32 + 1);
 			img = ImageCleaner.CleanImage(pathForTest + filenames.get(i) + fmt);
 		}
 		while ((char)i != CharacterRecognition.getCharacter(img, dataset, k) && k < dataset.size());
@@ -39,7 +40,7 @@ public class CharacterRecognition {
 	public static char getCharacter(Mat img, List<Character> dataset, int k) {
 		int[] cnt = new int[127];
 		int match = 0;
-		double[] toFind = MatManager.getDataFromMat(img);
+		double[] toFind = MatManager.getDataFromMat(MatManager.cropMat(img));
 		
 		int[] res = getKNN(k, toFind, dataset);
 		

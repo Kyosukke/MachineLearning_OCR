@@ -78,6 +78,7 @@ public class MatManager {
 		if (img == null) {
 			return null;
 		}
+		
 		double[] res = new double[img.rows() + img.cols()];
 		int cnt;
 		

@@ -16,7 +16,7 @@ public class DatasetManager {
 		Map<Integer, String> filename = getFileNames();
 		
 		for (String s : paths) {
-			for (int i = 32; i < 127; i++) {
+			for (int i = 48; i < 58; i++) {
 				
 				Mat img = ImageCleaner.CleanImage(s + filename.get(i) + fmt);
 				img = MatManager.cropMat(img);
@@ -29,7 +29,7 @@ public class DatasetManager {
 		/* external dataset */
 		int value = '0';
 		Mat img;
-		for (int i = 1; i < 7008; i++) {
+		for (int i = 1; i < 2044/*7008*/; i++) {
 			img = ImageCleaner.CleanImage("assets/OCR/OCR_sample/" + (char)value + "-" + i + fmt);
 			
 			if (img == null || img.empty()) {

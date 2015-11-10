@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.opencv.core.Core;
+
 import charrecognition.CharacterRecognition;
 import gui.OcrGui;
 
@@ -29,14 +30,15 @@ public class Initializer {
 		int k = CharacterRecognition.findK(path_member + "abbar_s/step1/abbar_s-", dataset, ".bmp");
 
 		System.out.println("k: " + k);
+		
 		OcrGui gui = new OcrGui(dataset, k);
 		
-		/*if (true)
+		/*
+		if (false)
 			System.out.println("txt: " + TextRecognition.readText(path_member + "victor_j/step2/nature.bmp", dataset, k));
 		else {
-			Mat img = ImageCleaner.CleanImage(path_member + "abbar_s/step1/abbar_s-" + "Z" + ".bmp");
+			Mat img = ImageCleaner.CleanImage(path_member + "abbar_s/step1/abbar_s-" + "num_8" + ".bmp");
 			System.out.println("Character Found: " + CharacterRecognition.getCharacter(img, dataset, k));
-			
 		}*/
 	}
 }
