@@ -32,6 +32,8 @@ public class OcrGui extends JFrame implements ActionListener{
 	Insets insets;
 	List<Character> dataset;
 	int k;
+	JLabel result;
+	JLabel textAnalysisImage;
 	
 	public OcrGui() {
 		
@@ -50,13 +52,17 @@ public class OcrGui extends JFrame implements ActionListener{
 		this.setLayout(null);
 		
 		getImage = new JButton("Rechercher Image");
-		JLabel textAnalysisImage = new JLabel("Image en cours d'analyse:");
+		textAnalysisImage = new JLabel("Image en cours d'analyse:");
 		JLabel textLabelResult = new JLabel("Texte ou charactère trouvé:");
+		jlabel = new JLabel();
+		result = new JLabel();
 		
 		getImage.addActionListener(this);
 		this.getContentPane().add(getImage);
 		this.getContentPane().add(textAnalysisImage);
+		this.getContentPane().add(jlabel);
 		this.getContentPane().add(textLabelResult);
+		this.getContentPane().add(result);
 		
 		insets = this.getInsets();
 		
@@ -68,6 +74,11 @@ public class OcrGui extends JFrame implements ActionListener{
 		
 		size = textLabelResult.getPreferredSize();
 		textLabelResult.setBounds(55 + insets.left, 690 + insets.top, size.width, size.height);
+		
+		size = jlabel.getPreferredSize();
+		
+		size = result.getPreferredSize();
+		result.setBounds(55 + insets.left, 720 + insets.top, size.width, size.height);
 		
 		this.setBackground(Color.ORANGE);
 		this.setVisible(true);
@@ -100,6 +111,8 @@ public class OcrGui extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if (e.getSource() == getImage) {
+			this.remove(jlabel);
+			this.remove(result);
 			JFileChooser fc = new JFileChooser();
 			fc.setCurrentDirectory(new java.io.File("."));
 			fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
@@ -117,38 +130,27 @@ public class OcrGui extends JFrame implements ActionListener{
 				} else if (icon.getIconWidth() == 50){
 					image = createResizedCopy(image, 100, 100, true);
 				}
+
 				jlabel = new JLabel(new ImageIcon(image));
-				this.getContentPane().remove(jlabel);
-	
-			   this.invalidate();
-			   this.validate();
-			   this.repaint();
+				
 			   this.getContentPane().add(jlabel);
 	   
-			   size = jlabel.getPreferredSize();
+			   
 			   if (icon.getIconWidth() != 50) {
 				   jlabel.setBounds(70 + insets.left, 150 + insets.top, 400, 500);
 			   } else {
 				   jlabel.setBounds(70 + insets.left, 150 + insets.top, 100, 100);
 			   }
 			   icon = null;
-			   this.revalidate();
-			   this.repaint();
-			
-			   
-			   JLabel result = new JLabel(TextRecognition.readText(this.filename, dataset, k)); 
-			   
-			   this.getContentPane().remove(result);
-			   this.invalidate();
-			   this.validate();
-			   this.repaint();
-			   
-			   this.getContentPane().add(result);
+
+			   result = new JLabel(TextRecognition.readText(this.filename, dataset, k)); 
 			   size = result.getPreferredSize();
 			   result.setBounds(55 + insets.left, 720 + insets.top, size.width, size.height);
+			   this.getContentPane().add(result);
+			   
 			   this.revalidate();
 			   this.repaint();
-			   
+
 			   } catch (IOException e1) {
 				   // TODO Auto-generated catch block
 				   e1.printStackTrace();
