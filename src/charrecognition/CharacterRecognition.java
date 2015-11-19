@@ -49,6 +49,8 @@ public class CharacterRecognition {
 			System.out.println("SIM CHAR:" + dataset.get(res[i]).getValue());
 		}
 		
+		System.out.println();
+		
 		for (int i = 0; i < 127; i++) {
 			if (cnt[i] > cnt[match])
 				match = i;
@@ -65,7 +67,7 @@ public class CharacterRecognition {
 			if (dataset.get(i).getData() != null)
 				tmp.put(i, FormulaManager.euclidianDistance(toFind, dataset.get(i).getData()));
 		}
-		
+
 		Map<Integer, Double> sorted = sortByComparator(tmp);
 		Object[] keys = sorted.keySet().toArray();
 		

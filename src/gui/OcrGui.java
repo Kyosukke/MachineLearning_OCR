@@ -53,7 +53,7 @@ public class OcrGui extends JFrame implements ActionListener{
 		
 		getImage = new JButton("Rechercher Image");
 		textAnalysisImage = new JLabel("Image en cours d'analyse:");
-		JLabel textLabelResult = new JLabel("Texte ou charactÃ¨re trouvÃ©:");
+		JLabel textLabelResult = new JLabel("Texte ou caractère trouvé:");
 		jlabel = new JLabel();
 		result = new JLabel();
 		

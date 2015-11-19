@@ -16,7 +16,7 @@ public class DatasetManager {
 		Map<Integer, String> filename = getFileNames();
 		
 		for (String s : paths) {
-			for (int i = 48; i < 58; i++) {
+			for (int i = 32; i < 127; i++) {
 				
 				Mat img = ImageCleaner.CleanImage(s + filename.get(i) + fmt);
 				img = MatManager.cropMat(img);
@@ -26,10 +26,10 @@ public class DatasetManager {
 			}
 		}
 		
-		/* external dataset *//*
+		/* external dataset */
 		int value = '0';
 		Mat img;
-		for (int i = 1; i < 2044/*7008*; i++) {
+		for (int i = 1; i < /*2044*/7008; i++) {
 			img = ImageCleaner.CleanImage("assets/OCR/OCR_sample/" + (char)value + "-" + i + fmt);
 			
 			if (img == null || img.empty()) {
@@ -44,7 +44,7 @@ public class DatasetManager {
 						value++;
 					else {
 						img = MatManager.cropMat(img);
-						img = MatManager.resizeMat(img, 10);
+						img = MatManager.resizeMat(img, 20);
 						img = ImageCleaner.CleanImage(img, false);
 						dataset.add(new Character((char)(value + 32), MatManager.getDataFromMat(img)));
 					}
@@ -53,11 +53,11 @@ public class DatasetManager {
 			}
 			else {
 				img = MatManager.cropMat(img);
-				img = MatManager.resizeMat(img, 10);
+				img = MatManager.resizeMat(img, 20);
 				img = ImageCleaner.CleanImage(img, false);
 				dataset.add(new Character((char)value, MatManager.getDataFromMat(img)));
 			}
-		}*/
+		}
 		
 		return dataset;
 	}
