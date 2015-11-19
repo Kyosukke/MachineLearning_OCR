@@ -83,7 +83,7 @@ public class TextRecognition {
 			for (Mat l : letters) {
 				if (!l.empty()) {
 					l = MatManager.cropMat(l);
-					l = MatManager.resizeMat(l, 10);
+					l = MatManager.resizeMat(l, 20);
 					l = ImageCleaner.CleanImage(l, false);
 				}
 				text += CharacterRecognition.getCharacter(l, dataset, k);

@@ -2,7 +2,7 @@ package charrecognition;
 
 public class FormulaManager {
 	
-	private static int size = 10; // pixels of image - 10*10
+	private static int size = 20 + 20; // pixels of image - 10*10
 
 	public static double euclidianDistance(double[] x, double[] y) {
 		double sum = 0.0;

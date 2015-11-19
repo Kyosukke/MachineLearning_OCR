@@ -25,7 +25,7 @@ public class CharacterRecognition {
 		Map<Integer, String> filenames = DatasetManager.getFileNames();
 		int i = 0;
 		int k = 0;
-		
+		/*
 		do {
 			k++;
 			i = 48 + Math.abs(rdm.nextInt()) % (58 - 48 + 1);
@@ -33,8 +33,8 @@ public class CharacterRecognition {
 			img = ImageCleaner.CleanImage(pathForTest + filenames.get(i) + fmt);
 		}
 		while ((char)i != CharacterRecognition.getCharacter(img, dataset, k) && k < dataset.size());
-		
-		return k;
+		*/
+		return 3;
 	}
 	
 	public static char getCharacter(Mat img, List<Character> dataset, int k) {

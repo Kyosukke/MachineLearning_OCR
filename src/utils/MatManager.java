@@ -79,6 +79,8 @@ public class MatManager {
 			return null;
 		}
 		
+		ImageDisplayer.displayImage(Mat2BufferedImage(img), "t");
+		
 		double[] res = new double[img.rows() + img.cols()];
 		int cnt;
 		
@@ -97,6 +99,8 @@ public class MatManager {
 					cnt++;
 			res[i] = cnt;
 		}
+		
+		System.out.println("i:" + img.cols() + img.rows());
 		
 		return res;
 	}
